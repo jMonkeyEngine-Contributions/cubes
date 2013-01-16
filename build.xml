@@ -5,7 +5,6 @@
 <project name="com.cubes" default="netbeans" basedir=".">
     <description>Builds, tests, and runs the project com.cubes.</description>
     <import file="nbproject/build-impl.xml"/>
-    
     <target name="init" depends="basic-init,files-init,build-init,-javac-init,-build-subproject"/>
     <target name="-build-subproject">
         <ant dir="../../Cubes" inheritall="false" target="jar"/>
