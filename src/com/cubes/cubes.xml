@@ -11,7 +11,7 @@ and open the template in the editor.
     <volume>
         <type>classpath</type>
         <resource>jar:nbinst://com.cubes/libs/Cubes.jar!/</resource>
-        <resource>jar:nbinst://com.cubes/libs/assets.jar!/</resource>
+        <resource>jar:nbinst://com.cubes/libs/cubes-assets.jar!/</resource>
     </volume>
     <volume>
         <type>src</type>
