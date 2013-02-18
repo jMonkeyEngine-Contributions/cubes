@@ -30,13 +30,13 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
             CubesSettings.BLOCK_MATERIAL = new BlockChunk_Material();
         }
     }
-    private Node node = new Node();
     private BlockTerrainControl terrain;
     private Vector3Int location = new Vector3Int();
     private Vector3Int blockLocation = new Vector3Int();
     private byte[][][] blockTypes = new byte[CubesSettings.CHUNK_SIZE_X][CubesSettings.CHUNK_SIZE_Y][CubesSettings.CHUNK_SIZE_Z];
     private boolean[][][] blocks_IsOnSurface = new boolean[CubesSettings.CHUNK_SIZE_X][CubesSettings.CHUNK_SIZE_Y][CubesSettings.CHUNK_SIZE_Z];
-    private Spatial optimizedSpatial;
+    private Node node = new Node();
+    private Geometry optimizedGeometry;
     private boolean needsMeshUpdate;
 
     @Override
@@ -102,17 +102,19 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         return Util.isValidIndex(blockTypes, location);
     }
     
-    public void updateSpatial(){
+    public boolean updateSpatial(){
         if(needsMeshUpdate){
-            if(optimizedSpatial != null){
-                node.detachChild(optimizedSpatial);
+            if(optimizedGeometry == null){
+                optimizedGeometry = new Geometry("");
+                optimizedGeometry.setMaterial(CubesSettings.BLOCK_MATERIAL);
+                optimizedGeometry.setQueueBucket(Bucket.Transparent);
+                node.attachChild(optimizedGeometry);
             }
-            optimizedSpatial = new Geometry("", BlockChunk_MeshOptimizer.generateOptimizedMesh(this));
-            optimizedSpatial.setMaterial(CubesSettings.BLOCK_MATERIAL);
-            optimizedSpatial.setQueueBucket(Bucket.Transparent);
-            node.attachChild(optimizedSpatial);
+            optimizedGeometry.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this));
             needsMeshUpdate = false;
+            return true;
         }
+        return false;
     }
     
     private void updateBlockState(Vector3Int location){
@@ -149,6 +151,14 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
 
     public Vector3Int getBlockLocation(){
         return blockLocation;
+    }
+
+    public Node getNode(){
+        return node;
+    }
+
+    public Geometry getOptimizedGeometry(){
+        return optimizedGeometry;
     }
 
     @Override

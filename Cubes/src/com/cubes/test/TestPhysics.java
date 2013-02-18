@@ -15,7 +15,10 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
 import com.cubes.test.blocks.*;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 public class TestPhysics extends SimpleApplication implements ActionListener{
 
@@ -37,6 +40,8 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
     private CharacterControl playerControl;
     private Vector3f walkDirection = new Vector3f();
     private boolean[] arrowKeys = new boolean[4];
+    private BlockTerrainControl blockTerrain;
+    private Node terrainNode = new Node();
 
     @Override
     public void simpleInitApp(){
@@ -66,14 +71,25 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
         CubesTestAssets.registerBlocks();
         CubesTestAssets.initializeEnvironment(this);
         
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(new Vector3Int(7, 1, 7));
+        blockTerrain = new BlockTerrainControl(new Vector3Int(7, 1, 7));
         blockTerrain.setBlocksFromNoise(new Vector3Int(), terrainSize, 0.8f, Block_Grass.class);
-        Node terrainNode = new Node();
+        blockTerrain.addChunkListener(new BlockChunkListener(){
+
+            @Override
+            public void onSpatialUpdated(BlockChunkControl blockChunk){
+                Geometry optimizedGeometry = blockChunk.getOptimizedGeometry();
+                RigidBodyControl rigidBodyControl = optimizedGeometry.getControl(RigidBodyControl.class);
+                if(rigidBodyControl == null){
+                    rigidBodyControl = new RigidBodyControl(0);
+                    optimizedGeometry.addControl(rigidBodyControl);
+                    bulletAppState.getPhysicsSpace().add(rigidBodyControl);
+                }
+                rigidBodyControl.setCollisionShape(new MeshCollisionShape(optimizedGeometry.getMesh()));
+            }
+        });
         terrainNode.addControl(blockTerrain);
         terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.attachChild(terrainNode);
-        terrainNode.addControl(new RigidBodyControl(0));
-        bulletAppState.getPhysicsSpace().addAll(terrainNode);
     }
 
     private void initPlayer(){

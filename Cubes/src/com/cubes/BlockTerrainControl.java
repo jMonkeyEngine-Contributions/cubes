@@ -16,6 +16,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -27,6 +28,7 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         initializeChunks(chunksCount);
     }
     private BlockChunkControl[][][] chunks;
+    private ArrayList<BlockChunkListener> chunkListeners = new ArrayList<BlockChunkListener>();
     
     private void initializeChunks(Vector3Int chunksCount){
         chunks = new BlockChunkControl[chunksCount.getX()][chunksCount.getY()][chunksCount.getZ()];
@@ -170,15 +172,31 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         return localLocation;
     }
     
-    private void updateSpatial(){
+    private boolean updateSpatial(){
+        boolean wasUpdatedNeeded = false;
         for(int x=0;x<chunks.length;x++){
             for(int y=0;y<chunks[0].length;y++){
                 for(int z=0;z<chunks[0][0].length;z++){
                     BlockChunkControl chunk = chunks[x][y][z];
-                    chunk.updateSpatial();
+                    if(chunk.updateSpatial()){
+                        wasUpdatedNeeded = true;
+                        for(int i=0;i<chunkListeners.size();i++){
+                            BlockChunkListener blockTerrainListener = chunkListeners.get(i);
+                            blockTerrainListener.onSpatialUpdated(chunk);
+                        }
+                    }
                 }
             }
         }
+        return wasUpdatedNeeded;
+    }
+    
+    public void addChunkListener(BlockChunkListener blockChunkListener){
+        chunkListeners.add(blockChunkListener);
+    }
+    
+    public void removeChunkListener(BlockChunkListener blockChunkListener){
+        chunkListeners.remove(blockChunkListener);
     }
     
     //Tools
