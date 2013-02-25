@@ -41,10 +41,15 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
 
     @Override
     public void setSpatial(Spatial spatial){
+        Spatial oldSpatial = this.spatial;
         super.setSpatial(spatial);
         if(spatial instanceof Node){
             Node parentNode = (Node) spatial;
             parentNode.attachChild(node);
+        }
+        else if(oldSpatial instanceof Node){
+            Node oldNode = (Node) oldSpatial;
+            oldNode.detachChild(node);
         }
     }
 

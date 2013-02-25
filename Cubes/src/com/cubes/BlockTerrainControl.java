@@ -45,11 +45,17 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
 
     @Override
     public void setSpatial(Spatial spatial){
+        Spatial oldSpatial = this.spatial;
         super.setSpatial(spatial);
         for(int x=0;x<chunks.length;x++){
             for(int y=0;y<chunks[0].length;y++){
                 for(int z=0;z<chunks[0][0].length;z++){
-                    spatial.addControl(chunks[x][y][z]);
+                    if(spatial == null){
+                        oldSpatial.removeControl(chunks[x][y][z]);
+                    }
+                    else{
+                        spatial.addControl(chunks[x][y][z]);
+                    }
                 }
             }
         }
@@ -65,6 +71,7 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial){
         throw new UnsupportedOperationException("Not supported yet.");
     }
