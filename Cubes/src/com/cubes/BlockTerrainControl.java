@@ -179,7 +179,7 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         return localLocation;
     }
     
-    private boolean updateSpatial(){
+    public boolean updateSpatial(){
         boolean wasUpdatedNeeded = false;
         for(int x=0;x<chunks.length;x++){
             for(int y=0;y<chunks[0].length;y++){
