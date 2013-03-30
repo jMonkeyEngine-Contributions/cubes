@@ -18,7 +18,6 @@ import com.cubes.test.blocks.*;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
 public class TestPhysics extends SimpleApplication implements ActionListener{
 
@@ -40,6 +39,7 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
     private CharacterControl playerControl;
     private Vector3f walkDirection = new Vector3f();
     private boolean[] arrowKeys = new boolean[4];
+    private CubesSettings cubesSettings;
     private BlockTerrainControl blockTerrain;
     private Node terrainNode = new Node();
 
@@ -67,11 +67,11 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
     }
     
     private void initBlockTerrain(){
-        CubesSettings.ASSET_MANAGER = assetManager;
         CubesTestAssets.registerBlocks();
         CubesTestAssets.initializeEnvironment(this);
         
-        blockTerrain = new BlockTerrainControl(new Vector3Int(7, 1, 7));
+        cubesSettings = CubesTestAssets.getSettings(this);
+        blockTerrain = new BlockTerrainControl(cubesSettings, new Vector3Int(7, 1, 7));
         blockTerrain.setBlocksFromNoise(new Vector3Int(), terrainSize, 0.8f, Block_Grass.class);
         blockTerrain.addChunkListener(new BlockChunkListener(){
 
@@ -93,17 +93,17 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
     }
 
     private void initPlayer(){
-        playerControl = new CharacterControl(new CapsuleCollisionShape((CubesSettings.BLOCK_SIZE / 2), CubesSettings.BLOCK_SIZE * 2), 0.05f);
+        playerControl = new CharacterControl(new CapsuleCollisionShape((cubesSettings.getBlockSize() / 2), cubesSettings.getBlockSize() * 2), 0.05f);
         playerControl.setJumpSpeed(25);
         playerControl.setFallSpeed(20);
         playerControl.setGravity(70);
-        playerControl.setPhysicsLocation(new Vector3f(5, terrainSize.getY() + 5, 5).mult(CubesSettings.BLOCK_SIZE));
+        playerControl.setPhysicsLocation(new Vector3f(5, terrainSize.getY() + 5, 5).mult(cubesSettings.getBlockSize()));
         bulletAppState.getPhysicsSpace().add(playerControl);
     }
 
     @Override
     public void simpleUpdate(float lastTimePerFrame){
-        float playerMoveSpeed = ((CubesSettings.BLOCK_SIZE * 6.5f) * lastTimePerFrame);
+        float playerMoveSpeed = ((cubesSettings.getBlockSize() * 6.5f) * lastTimePerFrame);
         Vector3f camDir = cam.getDirection().mult(playerMoveSpeed);
         Vector3f camLeft = cam.getLeft().mult(playerMoveSpeed);
         walkDirection.set(0, 0, 0);

@@ -35,7 +35,6 @@ public class TestPicking extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleInitApp(){
-        CubesSettings.ASSET_MANAGER = assetManager;
         CubesTestAssets.registerBlocks();
         initControls();
         initBlockTerrain();
@@ -53,7 +52,7 @@ public class TestPicking extends SimpleApplication implements ActionListener{
     }
     
     private void initBlockTerrain(){
-        blockTerrain = new BlockTerrainControl(new Vector3Int(2, 1, 2));
+        blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(2, 1, 2));
         blockTerrain.setBlockArea(new Vector3Int(0, 0, 0), new Vector3Int(32, 1, 32), Block_Stone.class);
         blockTerrain.setBlocksFromNoise(new Vector3Int(0, 1, 0), new Vector3Int(32, 5, 32), 0.5f, Block_Grass.class);
         terrainNode = new Node();

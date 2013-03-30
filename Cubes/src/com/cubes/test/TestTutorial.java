@@ -26,12 +26,11 @@ public class TestTutorial extends SimpleApplication{
 
     @Override
     public void simpleInitApp(){
-        CubesSettings.ASSET_MANAGER = assetManager;
         CubesTestAssets.registerBlocks();
         
         //This is your terrain, it contains the whole
         //block world and offers methods to modify it
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(new Vector3Int(1, 1, 1));
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(1, 1, 1));
 
         //To set a block, just specify the location and the block object
         //(Existing blocks will be replaced)

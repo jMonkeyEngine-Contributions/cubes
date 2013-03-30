@@ -28,11 +28,10 @@ public class TestModifications extends SimpleApplication{
     private Vector3Int lastModificationLocation = new Vector3Int(0, 4, 15);
 
     @Override
-    public void simpleInitApp(){        
-        CubesSettings.ASSET_MANAGER = assetManager;
+    public void simpleInitApp(){
         CubesTestAssets.registerBlocks();
         
-        blockTerrain = new BlockTerrainControl(new Vector3Int(2, 1, 2));
+        blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(2, 1, 2));
         for(int x=0;x<32;x++){
             for(int z=0;z<16;z++){
                 int groundHeight = (int) ((Math.random() * 4) + 8);

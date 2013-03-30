@@ -27,10 +27,9 @@ public class TestBlockModel extends SimpleApplication{
 
     @Override
     public void simpleInitApp(){
-        CubesSettings.ASSET_MANAGER = assetManager;
         CubesTestAssets.registerBlocks();
         
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(new Vector3Int(11, 1, 10));
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(11, 1, 10));
         //new BlockModel("Models/cubes/castle/castle.j3o", new Class[]{Block_Grass.class}).addToBlockTerrain(blockTerrain, new Vector3Int(), new Vector3Int(128, 100, 144));
         //new BlockModel("Models/cubes/dragon/dragon.j3o", new Class[]{Block_Grass.class}).addToBlockTerrain(blockTerrain, new Vector3Int(), new Vector3Int(112, 128, 128));
         //new BlockModel("Models/cubes/golem/golem.j3o", new Class[]{Block_Grass.class}).addToBlockTerrain(blockTerrain, new Vector3Int(), new Vector3Int(176, 256, 160));

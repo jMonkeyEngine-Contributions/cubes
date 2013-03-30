@@ -22,19 +22,19 @@ import com.jme3.scene.control.Control;
  */
 public class BlockChunkControl extends AbstractControl implements BitSerializable{
 
-    public BlockChunkControl(int x, int y, int z){
+    public BlockChunkControl(BlockTerrainControl terrain, int x, int y, int z){
+        this.terrain = terrain;
         location.set(x, y, z);
-        blockLocation.set(location.mult(CubesSettings.CHUNK_SIZE_X, CubesSettings.CHUNK_SIZE_Y, CubesSettings.CHUNK_SIZE_Z));
-        node.setLocalTranslation(new Vector3f(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).mult(CubesSettings.BLOCK_SIZE));
-        if(CubesSettings.BLOCK_MATERIAL == null){
-            CubesSettings.BLOCK_MATERIAL = new BlockChunk_Material();
-        }
+        blockLocation.set(location.mult(terrain.getSettings().getChunkSizeX(), terrain.getSettings().getChunkSizeY(), terrain.getSettings().getChunkSizeZ()));
+        node.setLocalTranslation(new Vector3f(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).mult(terrain.getSettings().getBlockSize()));
+        blockTypes = new byte[terrain.getSettings().getChunkSizeX()][terrain.getSettings().getChunkSizeY()][terrain.getSettings().getChunkSizeZ()];
+        blocks_IsOnSurface = new boolean[terrain.getSettings().getChunkSizeX()][terrain.getSettings().getChunkSizeY()][terrain.getSettings().getChunkSizeZ()];
     }
     private BlockTerrainControl terrain;
     private Vector3Int location = new Vector3Int();
     private Vector3Int blockLocation = new Vector3Int();
-    private byte[][][] blockTypes = new byte[CubesSettings.CHUNK_SIZE_X][CubesSettings.CHUNK_SIZE_Y][CubesSettings.CHUNK_SIZE_Z];
-    private boolean[][][] blocks_IsOnSurface = new boolean[CubesSettings.CHUNK_SIZE_X][CubesSettings.CHUNK_SIZE_Y][CubesSettings.CHUNK_SIZE_Z];
+    private byte[][][] blockTypes;
+    private boolean[][][] blocks_IsOnSurface;
     private Node node = new Node();
     private Geometry optimizedGeometry;
     private boolean needsMeshUpdate;
@@ -111,7 +111,7 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         if(needsMeshUpdate){
             if(optimizedGeometry == null){
                 optimizedGeometry = new Geometry("");
-                optimizedGeometry.setMaterial(CubesSettings.BLOCK_MATERIAL);
+                optimizedGeometry.setMaterial(terrain.getSettings().getBlockMaterial());
                 optimizedGeometry.setQueueBucket(Bucket.Transparent);
                 node.attachChild(optimizedGeometry);
             }
@@ -144,10 +144,6 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
 
     public BlockTerrainControl getTerrain(){
         return terrain;
-    }
-
-    public void setTerrain(BlockTerrainControl terrain){
-        this.terrain = terrain;
     }
 
     public Vector3Int getLocation(){
@@ -198,10 +194,10 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         needsMeshUpdate = true;
     }
     
-    public static Vector3Int getNeededBlockChunks(Vector3Int blocksCount){
-        int chunksCountX = (int) Math.ceil(((float) blocksCount.getX()) / CubesSettings.CHUNK_SIZE_X);
-        int chunksCountY = (int) Math.ceil(((float) blocksCount.getY()) / CubesSettings.CHUNK_SIZE_Y);
-        int chunksCountZ = (int) Math.ceil(((float) blocksCount.getZ()) / CubesSettings.CHUNK_SIZE_Z);
+    private Vector3Int getNeededBlockChunks(Vector3Int blocksCount){
+        int chunksCountX = (int) Math.ceil(((float) blocksCount.getX()) / terrain.getSettings().getChunkSizeX());
+        int chunksCountY = (int) Math.ceil(((float) blocksCount.getY()) / terrain.getSettings().getChunkSizeY());
+        int chunksCountZ = (int) Math.ceil(((float) blocksCount.getZ()) / terrain.getSettings().getChunkSizeZ());
         return new Vector3Int(chunksCountX, chunksCountY, chunksCountZ);
     }
 }

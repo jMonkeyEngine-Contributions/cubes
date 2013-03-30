@@ -24,9 +24,11 @@ import java.util.ArrayList;
  */
 public class BlockTerrainControl extends AbstractControl implements BitSerializable{
 
-    public BlockTerrainControl(Vector3Int chunksCount){
+    public BlockTerrainControl(CubesSettings settings, Vector3Int chunksCount){
+        this.settings = settings;
         initializeChunks(chunksCount);
     }
+    private CubesSettings settings;
     private BlockChunkControl[][][] chunks;
     private ArrayList<BlockChunkListener> chunkListeners = new ArrayList<BlockChunkListener>();
     
@@ -35,8 +37,7 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         for(int x=0;x<chunks.length;x++){
             for(int y=0;y<chunks[0].length;y++){
                 for(int z=0;z<chunks[0][0].length;z++){
-                    BlockChunkControl chunk = new BlockChunkControl(x, y, z);
-                    chunk.setTerrain(this);
+                    BlockChunkControl chunk = new BlockChunkControl(this, x, y, z);
                     chunks[x][y][z] = chunk;
                 }
             }
@@ -163,9 +164,9 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
     
     private Vector3Int getChunkLocation(Vector3Int blockLocation){
         Vector3Int chunkLocation = new Vector3Int();
-        int chunkX = (blockLocation.getX() / CubesSettings.CHUNK_SIZE_X);
-        int chunkY = (blockLocation.getY() / CubesSettings.CHUNK_SIZE_Y);
-        int chunkZ = (blockLocation.getZ() / CubesSettings.CHUNK_SIZE_Z);
+        int chunkX = (blockLocation.getX() / settings.getChunkSizeX());
+        int chunkY = (blockLocation.getY() / settings.getChunkSizeY());
+        int chunkZ = (blockLocation.getZ() / settings.getChunkSizeZ());
         chunkLocation.set(chunkX, chunkY, chunkZ);
         return chunkLocation;
     }
@@ -206,11 +207,15 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         chunkListeners.remove(blockChunkListener);
     }
     
+    public CubesSettings getSettings(){
+        return settings;
+    }
+    
     //Tools
     
     public void setBlocksFromHeightmap(Vector3Int location, String heightmapPath, int maximumHeight, Class<? extends Block> blockClass){
         try{
-            Texture heightmapTexture = CubesSettings.ASSET_MANAGER.loadTexture(heightmapPath);
+            Texture heightmapTexture = settings.getAssetManager().loadTexture(heightmapPath);
             ImageBasedHeightMap heightmap = new ImageBasedHeightMap(heightmapTexture.getImage(), 1f);
             heightmap.load();
             heightmap.setHeightScale(maximumHeight / 255f);
@@ -287,7 +292,7 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
 
     @Override
     public BlockTerrainControl clone(){
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(new Vector3Int());
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(settings, new Vector3Int());
         blockTerrain.setBlocksFromTerrain(this);
         return blockTerrain;
     }

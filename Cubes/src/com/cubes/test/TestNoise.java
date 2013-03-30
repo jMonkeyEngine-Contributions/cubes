@@ -26,10 +26,9 @@ public class TestNoise extends SimpleApplication{
 
     @Override
     public void simpleInitApp(){
-        CubesSettings.ASSET_MANAGER = assetManager;
         CubesTestAssets.registerBlocks();
         
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(new Vector3Int(4, 1, 4));
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(4, 1, 4));
         blockTerrain.setBlocksFromNoise(new Vector3Int(0, 0, 0), new Vector3Int(64, 50, 64), 0.3f, Block_Grass.class);
         Node terrainNode = new Node();
         terrainNode.addControl(blockTerrain);

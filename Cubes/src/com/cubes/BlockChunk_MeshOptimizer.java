@@ -43,24 +43,25 @@ public class BlockChunk_MeshOptimizer{
         ArrayList<Vector3f> verticeList = new ArrayList<Vector3f>();
         ArrayList<Vector2f> textureCoordinateList = new ArrayList<Vector2f>();
         ArrayList<Integer> indicesList = new ArrayList<Integer>();
+        BlockTerrainControl blockTerrain = chunk.getTerrain();
         Vector3Int tmpLocation = new Vector3Int();
-        for(int x=0;x<CubesSettings.CHUNK_SIZE_X;x++){
-            for(int y=0;y<CubesSettings.CHUNK_SIZE_Y;y++){
-                for(int z=0;z<CubesSettings.CHUNK_SIZE_Z;z++){
+        for(int x=0;x<blockTerrain.getSettings().getChunkSizeX();x++){
+            for(int y=0;y<blockTerrain.getSettings().getChunkSizeY();y++){
+                for(int z=0;z<blockTerrain.getSettings().getChunkSizeZ();z++){
                     tmpLocation.set(x, y, z);
                     BlockType block = chunk.getBlock(tmpLocation);
                     if(block != null){
                         BlockSkin blockSkin = block.getSkin();
                         Vector3f blockLocation = new Vector3f(x, y, z);
 
-                        Vector3f faceLoc_Bottom_TopLeft = blockLocation.add(new Vector3f(0, 0, 0)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Bottom_TopRight = blockLocation.add(new Vector3f(1, 0, 0)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Bottom_BottomLeft = blockLocation.add(new Vector3f(0, 0, 1)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Bottom_BottomRight = blockLocation.add(new Vector3f(1, 0, 1)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Top_TopLeft = blockLocation.add(new Vector3f(0, 1, 0)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Top_TopRight = blockLocation.add(new Vector3f(1, 1, 0)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Top_BottomLeft = blockLocation.add(new Vector3f(0, 1, 1)).mult(CubesSettings.BLOCK_SIZE);
-                        Vector3f faceLoc_Top_BottomRight = blockLocation.add(new Vector3f(1, 1, 1)).mult(CubesSettings.BLOCK_SIZE);
+                        Vector3f faceLoc_Bottom_TopLeft = blockLocation.add(new Vector3f(0, 0, 0)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Bottom_TopRight = blockLocation.add(new Vector3f(1, 0, 0)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Bottom_BottomLeft = blockLocation.add(new Vector3f(0, 0, 1)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Bottom_BottomRight = blockLocation.add(new Vector3f(1, 0, 1)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Top_TopLeft = blockLocation.add(new Vector3f(0, 1, 0)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Top_TopRight = blockLocation.add(new Vector3f(1, 1, 0)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Top_BottomLeft = blockLocation.add(new Vector3f(0, 1, 1)).mult(blockTerrain.getSettings().getBlockSize());
+                        Vector3f faceLoc_Top_BottomRight = blockLocation.add(new Vector3f(1, 1, 1)).mult(blockTerrain.getSettings().getBlockSize());
 
                         if(meshMerger.shouldFaceBeAdded(chunk, tmpLocation, Block.Face.Top)){
                             addVerticeIndexes(verticeList, indicesList);

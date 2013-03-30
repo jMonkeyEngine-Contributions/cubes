@@ -6,6 +6,7 @@ package com.cubes.test;
 
 import com.cubes.*;
 import com.cubes.test.blocks.*;
+import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
@@ -24,6 +25,12 @@ import java.util.List;
 public class CubesTestAssets{
     
     private static final Vector3f lightDirection = new Vector3f(-0.8f, -1, -0.8f).normalizeLocal();
+    
+    public static CubesSettings getSettings(Application application){
+        CubesSettings settings = new CubesSettings(application);
+        settings.setDefaultBlockMaterial("Textures/cubes/terrain.png");
+        return settings;
+    }
     
     public static void registerBlocks(){
         BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation[]{

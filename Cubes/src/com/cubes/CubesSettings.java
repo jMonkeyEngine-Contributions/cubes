@@ -4,7 +4,9 @@
  */
 package com.cubes;
 
+import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
 
 /**
  *
@@ -12,11 +14,61 @@ import com.jme3.asset.AssetManager;
  */
 public class CubesSettings{
     
-    public static AssetManager ASSET_MANAGER;
-    public static float BLOCK_SIZE = 3;
-    public static int CHUNK_SIZE_X = 16;
-    public static int CHUNK_SIZE_Y = 256;
-    public static int CHUNK_SIZE_Z = 16;
-    public static String BLOCK_TEXTURE_PATH = "Textures/cubes/terrain.png";
-    public static BlockChunk_Material BLOCK_MATERIAL;
+    public CubesSettings(Application application){
+        assetManager = application.getAssetManager();
+    }
+    private AssetManager assetManager;
+    private float blockSize = 3;
+    private int chunkSizeX = 16;
+    private int chunkSizeY = 256;
+    private int chunkSizeZ = 16;
+    private Material blockMaterial;
+
+    public AssetManager getAssetManager(){
+        return assetManager;
+    }
+
+    public float getBlockSize(){
+        return blockSize;
+    }
+
+    public void setBlockSize(float blockSize){
+        this.blockSize = blockSize;
+    }
+
+    public int getChunkSizeX(){
+        return chunkSizeX;
+    }
+
+    public void setChunkSizeX(int chunkSizeX){
+        this.chunkSizeX = chunkSizeX;
+    }
+
+    public int getChunkSizeY(){
+        return chunkSizeY;
+    }
+
+    public void setChunkSizeY(int chunkSizeY){
+        this.chunkSizeY = chunkSizeY;
+    }
+
+    public int getChunkSizeZ(){
+        return chunkSizeZ;
+    }
+
+    public void setChunkSizeZ(int chunkSizeZ){
+        this.chunkSizeZ = chunkSizeZ;
+    }
+
+    public Material getBlockMaterial(){
+        return blockMaterial;
+    }
+
+    public void setDefaultBlockMaterial(String textureFilePath){
+        setBlockMaterial(new BlockChunk_Material(assetManager, textureFilePath));
+    }
+
+    public void setBlockMaterial(Material blockMaterial){
+        this.blockMaterial = blockMaterial;
+    }
 }
