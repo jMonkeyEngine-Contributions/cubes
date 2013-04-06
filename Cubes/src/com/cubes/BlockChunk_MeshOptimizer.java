@@ -23,7 +23,7 @@ public class BlockChunk_MeshOptimizer{
     private static final BlockChunk_MeshMerger defaultBlockMerger = new BlockChunk_MeshMerger(){
 
         public boolean shouldFaceBeAdded(BlockChunkControl chunk, Vector3Int location, Block.Face face){
-            BlockType neighborBlock = chunk.getNeighborBlock(location, face);
+            BlockType neighborBlock = chunk.getNeighborBlock_Local(location, face);
             if(neighborBlock != null){
                 if(neighborBlock.getSkin().isTransparent() != neighborBlock.getSkin().isTransparent()){
                     return true;

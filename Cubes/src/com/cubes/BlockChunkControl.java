@@ -67,11 +67,16 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public BlockType getNeighborBlock(Vector3Int location, Block.Face face){
-        return terrain.getBlock(getNeighborBlockWorldLocation(location, face));
+    public BlockType getNeighborBlock_Local(Vector3Int location, Block.Face face){
+        Vector3Int neighborLocation = BlockNavigator.getNeighborBlockLocalLocation(location, face);
+        return getBlock(neighborLocation);
     }
     
-    public Vector3Int getNeighborBlockWorldLocation(Vector3Int location, Block.Face face){
+    public BlockType getNeighborBlock_Global(Vector3Int location, Block.Face face){
+        return terrain.getBlock(getNeighborBlockGlobalLocation(location, face));
+    }
+    
+    private Vector3Int getNeighborBlockGlobalLocation(Vector3Int location, Block.Face face){
         Vector3Int neighborLocation = BlockNavigator.getNeighborBlockLocalLocation(location, face);
         neighborLocation.addLocal(blockLocation);
         return neighborLocation;
@@ -82,8 +87,7 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
             byte blockType = blockTypes[location.getX()][location.getY()][location.getZ()];
             return BlockManager.getType(blockType);
         }
-        Vector3Int worldBlockLocation = blockLocation.add(location);
-        return terrain.getBlock(worldBlockLocation);
+        return null;
     }
     
     public void setBlock(Vector3Int location, Class<? extends Block> blockClass){
@@ -125,7 +129,7 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
     private void updateBlockState(Vector3Int location){
         updateBlockInformation(location);
         for(int i=0;i<Block.Face.values().length;i++){
-            Vector3Int neighborLocation = getNeighborBlockWorldLocation(location, Block.Face.values()[i]);
+            Vector3Int neighborLocation = getNeighborBlockGlobalLocation(location, Block.Face.values()[i]);
             BlockChunkControl chunk = terrain.getChunk(neighborLocation);
             if(chunk != null){
                 chunk.updateBlockInformation(neighborLocation.subtract(chunk.getBlockLocation()));
@@ -134,7 +138,7 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
     }
     
     private void updateBlockInformation(Vector3Int location){
-        BlockType neighborBlock_Top = terrain.getBlock(getNeighborBlockWorldLocation(location, Block.Face.Top));
+        BlockType neighborBlock_Top = terrain.getBlock(getNeighborBlockGlobalLocation(location, Block.Face.Top));
         blocks_IsOnSurface[location.getX()][location.getY()][location.getZ()] = (neighborBlock_Top == null);
     }
 
