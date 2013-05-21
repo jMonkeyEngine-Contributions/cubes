@@ -4,6 +4,7 @@
  */
 package com.cubes;
 
+import java.util.Map;
 import com.jme3.math.Vector3f;
 
 /**
@@ -38,5 +39,14 @@ public class Util{
             number = Math.round(number);
         }
         return number;
+    }
+    
+    public static <T, E> T getHashKeyByValue(Map<T, E> map, E value){
+        for(Map.Entry<T, E> entry : map.entrySet()){
+            if(value.equals(entry.getValue())){
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

@@ -20,22 +20,9 @@ public class BlockChunk_MeshOptimizer{
     private static Vector3f[] vertices;
     private static Vector2f[] textureCoordinates;
     private static int[] indices;
-    private static final BlockChunk_MeshMerger defaultBlockMerger = new BlockChunk_MeshMerger(){
 
-        public boolean shouldFaceBeAdded(BlockChunkControl chunk, Vector3Int location, Block.Face face){
-            BlockType neighborBlock = chunk.getNeighborBlock_Local(location, face);
-            if(neighborBlock != null){
-                if(neighborBlock.getSkin().isTransparent() != neighborBlock.getSkin().isTransparent()){
-                    return true;
-                }
-                return false;
-            }
-            return true;
-        }
-    };
-
-    public static Mesh generateOptimizedMesh(BlockChunkControl blockChunk){
-        loadMeshData(blockChunk, defaultBlockMerger);
+    public static Mesh generateOptimizedMesh(BlockChunkControl blockChunk, BlockChunk_MeshMerger meshMerger){
+        loadMeshData(blockChunk, meshMerger);
         return generateMesh();
     }
 

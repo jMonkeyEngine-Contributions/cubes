@@ -27,6 +27,10 @@ public class BlockManager{
         return BLOCK_TYPES.get(blockClass);
     }
     
+    public static Class<? extends Block> getClass(byte type){
+        return Util.getHashKeyByValue(BLOCK_TYPES, getType(type));
+    }
+    
     public static BlockType getType(byte type){
         return TYPES_BLOCKS[type];
     }

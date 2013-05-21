@@ -77,7 +77,7 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
 
             @Override
             public void onSpatialUpdated(BlockChunkControl blockChunk){
-                Geometry optimizedGeometry = blockChunk.getOptimizedGeometry();
+                Geometry optimizedGeometry = blockChunk.getOptimizedGeometry_Opaque();
                 RigidBodyControl rigidBodyControl = optimizedGeometry.getControl(RigidBodyControl.class);
                 if(rigidBodyControl == null){
                     rigidBodyControl = new RigidBodyControl(0);

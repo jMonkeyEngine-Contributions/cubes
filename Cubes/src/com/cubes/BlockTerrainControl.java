@@ -4,10 +4,8 @@
  */
 package com.cubes;
 
-import com.cubes.network.BitInputStream;
-import com.cubes.network.BitOutputStream;
-import com.cubes.network.BitSerializable;
-import com.cubes.network.CubesSerializer;
+import java.io.IOException;
+import java.util.ArrayList;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -15,8 +13,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
-import java.io.IOException;
-import java.util.ArrayList;
+import com.cubes.network.*;
 
 /**
  *
@@ -199,6 +196,16 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         return wasUpdatedNeeded;
     }
     
+    public void updateBlockMaterial(){
+        for(int x=0;x<chunks.length;x++){
+            for(int y=0;y<chunks[0].length;y++){
+                for(int z=0;z<chunks[0][0].length;z++){
+                    chunks[x][y][z].updateBlockMaterial();
+                }
+            }
+        }
+    }
+    
     public void addChunkListener(BlockChunkListener blockChunkListener){
         chunkListeners.add(blockChunkListener);
     }
@@ -209,6 +216,10 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
     
     public CubesSettings getSettings(){
         return settings;
+    }
+
+    public BlockChunkControl[][][] getChunks(){
+        return chunks;
     }
     
     //Tools

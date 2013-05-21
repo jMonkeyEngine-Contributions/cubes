@@ -10,11 +10,11 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.cubes.network.*;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
+import com.cubes.network.*;
 
 /**
  *
@@ -36,7 +36,8 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
     private byte[][][] blockTypes;
     private boolean[][][] blocks_IsOnSurface;
     private Node node = new Node();
-    private Geometry optimizedGeometry;
+    private Geometry optimizedGeometry_Opaque;
+    private Geometry optimizedGeometry_Transparent;
     private boolean needsMeshUpdate;
 
     @Override
@@ -63,6 +64,7 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial){
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -113,17 +115,33 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
     
     public boolean updateSpatial(){
         if(needsMeshUpdate){
-            if(optimizedGeometry == null){
-                optimizedGeometry = new Geometry("");
-                optimizedGeometry.setMaterial(terrain.getSettings().getBlockMaterial());
-                optimizedGeometry.setQueueBucket(Bucket.Transparent);
-                node.attachChild(optimizedGeometry);
+            if(optimizedGeometry_Opaque == null){
+                optimizedGeometry_Opaque = new Geometry("");
+                optimizedGeometry_Opaque.setQueueBucket(Bucket.Opaque);
+                node.attachChild(optimizedGeometry_Opaque);
+                updateBlockMaterial();
             }
-            optimizedGeometry.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this));
+            if(optimizedGeometry_Transparent == null){
+                optimizedGeometry_Transparent = new Geometry("");
+                optimizedGeometry_Transparent.setQueueBucket(Bucket.Transparent);
+                node.attachChild(optimizedGeometry_Transparent);
+                updateBlockMaterial();
+            }
+            optimizedGeometry_Opaque.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this, BlockChunk_TransparencyMerger.OPAQUE));
+            optimizedGeometry_Transparent.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this, BlockChunk_TransparencyMerger.TRANSPARENT));
             needsMeshUpdate = false;
             return true;
         }
         return false;
+    }
+    
+    public void updateBlockMaterial(){
+        if(optimizedGeometry_Opaque != null){
+            optimizedGeometry_Opaque.setMaterial(terrain.getSettings().getBlockMaterial());
+        }
+        if(optimizedGeometry_Transparent != null){
+            optimizedGeometry_Transparent.setMaterial(terrain.getSettings().getBlockMaterial());
+        }
     }
     
     private void updateBlockState(Vector3Int location){
@@ -162,8 +180,12 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         return node;
     }
 
-    public Geometry getOptimizedGeometry(){
-        return optimizedGeometry;
+    public Geometry getOptimizedGeometry_Opaque(){
+        return optimizedGeometry_Opaque;
+    }
+
+    public Geometry getOptimizedGeometry_Transparent(){
+        return optimizedGeometry_Transparent;
     }
 
     @Override
