@@ -4,8 +4,7 @@
  */
 package com.cubes.test;
 
-import com.cubes.*;
-import com.cubes.test.blocks.*;
+import java.util.List;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.DirectionalLight;
@@ -13,10 +12,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.SceneProcessor;
-import com.jme3.shadow.PssmShadowRenderer;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
-import java.util.List;
+import com.cubes.*;
+import com.cubes.test.blocks.*;
 
 /**
  *
@@ -74,10 +74,10 @@ public class CubesTestAssets{
         simpleApplication.getRootNode().addLight(directionalLight);
         simpleApplication.getRootNode().attachChild(SkyFactory.createSky(simpleApplication.getAssetManager(), "Textures/cubes/sky.jpg", true));
         
-        PssmShadowRenderer pssmShadowRenderer = new PssmShadowRenderer(simpleApplication.getAssetManager(), 2048, 3);
-        pssmShadowRenderer.setDirection(lightDirection);
-        pssmShadowRenderer.setShadowIntensity(0.3f);
-        simpleApplication.getViewPort().addProcessor(pssmShadowRenderer);
+        DirectionalLightShadowRenderer directionalLightShadowRenderer = new DirectionalLightShadowRenderer(simpleApplication.getAssetManager(), 2048, 3);
+        directionalLightShadowRenderer.setLight(directionalLight);
+        directionalLightShadowRenderer.setShadowIntensity(0.3f);
+        simpleApplication.getViewPort().addProcessor(directionalLightShadowRenderer);
     }
     
     public static void initializeWater(SimpleApplication simpleApplication){
