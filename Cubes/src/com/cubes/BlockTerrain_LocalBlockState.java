@@ -25,12 +25,12 @@ public class BlockTerrain_LocalBlockState{
         return localBlockLocation;
     }
 
-    public BlockType getBlock(){
+    public Block getBlock(){
         return chunk.getBlock(localBlockLocation);
     }
     
-    public void setBlock(Class<? extends Block> blockClass){
-        chunk.setBlock(localBlockLocation, blockClass);
+    public void setBlock(Block block){
+        chunk.setBlock(localBlockLocation, block);
     }
     
     public void removeBlock(){

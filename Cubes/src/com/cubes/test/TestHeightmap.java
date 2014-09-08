@@ -4,10 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
-import com.jme3.scene.Node;
 
 public class TestHeightmap extends SimpleApplication{
 
@@ -29,8 +28,8 @@ public class TestHeightmap extends SimpleApplication{
         CubesTestAssets.registerBlocks();
         
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(4, 1, 4));
-        blockTerrain.setBlockArea(new Vector3Int(0, 0, 0), new Vector3Int(64, 1, 64), Block_Stone.class);
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, 0), "Textures/cubes/heightmap.jpg", 20, Block_Grass.class);
+        blockTerrain.setBlockArea(new Vector3Int(0, 0, 0), new Vector3Int(64, 1, 64), CubesTestAssets.BLOCK_STONE);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, 0), "Textures/cubes/heightmap.jpg", 20, CubesTestAssets.BLOCK_GRASS);
         Node terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         rootNode.attachChild(terrainNode);

@@ -4,11 +4,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
 import com.cubes.network.CubesSerializer;
-import com.cubes.test.blocks.*;
-import com.jme3.scene.Node;
 
 public class TestSerialize extends SimpleApplication{
 
@@ -30,7 +29,7 @@ public class TestSerialize extends SimpleApplication{
         CubesTestAssets.registerBlocks();
         
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(1, 1, 1));
-        blockTerrain.setBlocksFromNoise(new Vector3Int(0, 0, 0), new Vector3Int(16, 10, 16), 0.5f, Block_Grass.class);
+        blockTerrain.setBlocksFromNoise(new Vector3Int(0, 0, 0), new Vector3Int(16, 10, 16), 0.5f, CubesTestAssets.BLOCK_GRASS);
         Node terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         terrainNode.setLocalTranslation(40, 0, 0);

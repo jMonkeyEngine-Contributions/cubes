@@ -16,7 +16,7 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
+import com.cubes.shapes.*;
 
 /**
  *
@@ -24,48 +24,94 @@ import com.cubes.test.blocks.*;
  */
 public class CubesTestAssets{
     
-    private static final Vector3f lightDirection = new Vector3f(-0.8f, -1, -0.8f).normalizeLocal();
-    
     public static CubesSettings getSettings(Application application){
         CubesSettings settings = new CubesSettings(application);
         settings.setDefaultBlockMaterial("Textures/cubes/terrain.png");
         return settings;
     }
     
-    public static void registerBlocks(){
-        BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation[]{
-            new BlockSkin_TextureLocation(0, 0),
-            new BlockSkin_TextureLocation(1, 0),
-            new BlockSkin_TextureLocation(2, 0),
-        }, false){
+    public static final Block BLOCK_GRASS = new Block(new BlockSkin[]{
+            new BlockSkin(new BlockSkin_TextureLocation(0, 0), false),
+            new BlockSkin(new BlockSkin_TextureLocation(1, 0), false),
+            new BlockSkin(new BlockSkin_TextureLocation(2, 0), false)
+        }){
 
-            @Override
-            protected int getTextureLocationIndex(BlockChunkControl chunk, Vector3Int blockLocation, Block.Face face){
-                if(chunk.isBlockOnSurface(blockLocation)){
-                    switch(face){
-                        case Top:
-                            return 0;
+        @Override
+        protected int getSkinIndex(BlockChunkControl chunk, Vector3Int location, Block.Face face){
+            if(chunk.isBlockOnSurface(location)){
+                switch(face){
+                    case Top:
+                        return 0;
 
-                        case Bottom:
-                            return 2;
-                    }
-                    return 1;
+                    case Bottom:
+                        return 2;
                 }
+                return 1;
+            }
+            return 2;
+        }
+    };
+    private static final BlockSkin[] SKINS_WOOD = new BlockSkin[]{
+        new BlockSkin(new BlockSkin_TextureLocation(4, 0), false),
+        new BlockSkin(new BlockSkin_TextureLocation(4, 0), false),
+        new BlockSkin(new BlockSkin_TextureLocation(3, 0), false),
+        new BlockSkin(new BlockSkin_TextureLocation(3, 0), false),
+        new BlockSkin(new BlockSkin_TextureLocation(3, 0), false),
+        new BlockSkin(new BlockSkin_TextureLocation(3, 0), false)
+    };
+    public static Block BLOCK_WOOD = new Block(SKINS_WOOD);
+    public static Block BLOCK_WOOD_FLAT = new Block(SKINS_WOOD){{
+        setShapes(new BlockShape_Cuboid(new float[]{0, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f}));
+    }};
+    public static Block BLOCK_BRICK = new Block(new BlockSkin(new BlockSkin_TextureLocation(7, 0), false));
+    public static Block BLOCK_CONNECTOR_ROD = new Block(new BlockSkin(new BlockSkin_TextureLocation(7, 0), false)){{
+            setShapes(
+                new BlockShape_Cuboid(new float[]{0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f}),
+                new BlockShape_Cuboid(new float[]{0.5f, 0.5f, 0.2f, 0.2f, 0.2f, 0.2f}),
+                new BlockShape_Cuboid(new float[]{0.2f, 0.2f, 0.5f, 0.5f, 0.2f, 0.2f}),
+                new BlockShape_Cuboid(new float[]{0.2f, 0.2f, 0.2f, 0.2f, 0.5f, 0.5f})
+            );
+        }
+
+        @Override
+        protected int getShapeIndex(BlockChunkControl chunk, Vector3Int location){
+            if((chunk.getNeighborBlock_Global(location, Block.Face.Top) !=  null) && (chunk.getNeighborBlock_Global(location, Block.Face.Bottom) !=  null)){
+                return 1;
+            }
+            else if((chunk.getNeighborBlock_Global(location, Block.Face.Left) !=  null) && (chunk.getNeighborBlock_Global(location, Block.Face.Right) !=  null)){
                 return 2;
             }
-        });
-        BlockManager.register(Block_Wood.class, new BlockSkin(new BlockSkin_TextureLocation[]{
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(3, 0),
-            new BlockSkin_TextureLocation(3, 0),
-            new BlockSkin_TextureLocation(3, 0),
-            new BlockSkin_TextureLocation(3, 0)
-        }, false));
-        BlockManager.register(Block_Stone.class, new BlockSkin(new BlockSkin_TextureLocation(9, 0), false));
-        BlockManager.register(Block_Water.class, new BlockSkin(new BlockSkin_TextureLocation(0, 1), true));
-        BlockManager.register(Block_Brick.class, new BlockSkin(new BlockSkin_TextureLocation(11, 0), false));
+            else if((chunk.getNeighborBlock_Global(location, Block.Face.Front) !=  null) && (chunk.getNeighborBlock_Global(location, Block.Face.Back) !=  null)){
+                return 3;
+            }
+            return 0;
+    }};
+    public static Block BLOCK_GLASS = new Block(new BlockSkin(new BlockSkin_TextureLocation(8, 0), true));
+    public static Block BLOCK_STONE = new Block(new BlockSkin(new BlockSkin_TextureLocation(9, 0), false));
+    public static Block BLOCK_STONE_PILLAR = new Block(new BlockSkin(new BlockSkin_TextureLocation(9, 0), false)){{
+            setShapes(new BlockShape_Cube(), new BlockShape_Pyramid());
+        }
+
+        @Override
+        protected int getShapeIndex(BlockChunkControl chunk, Vector3Int location){
+            return (chunk.isBlockOnSurface(location)?1:0);
+        }
+    };
+    public static Block BLOCK_WATER = new Block(new BlockSkin(new BlockSkin_TextureLocation(0, 1), true));
+    
+    public static void registerBlocks(){
+        BlockManager.register(BLOCK_GRASS);
+        BlockManager.register(BLOCK_WOOD);
+        BlockManager.register(BLOCK_WOOD_FLAT);
+        BlockManager.register(BLOCK_BRICK);
+        BlockManager.register(BLOCK_CONNECTOR_ROD);
+        BlockManager.register(BLOCK_GLASS);
+        BlockManager.register(BLOCK_STONE);
+        BlockManager.register(BLOCK_STONE_PILLAR);
+        BlockManager.register(BLOCK_WATER);
     }
+    
+    private static final Vector3f lightDirection = new Vector3f(-0.8f, -1, -0.8f).normalizeLocal();
     
     public static void initializeEnvironment(SimpleApplication simpleApplication){
         DirectionalLight directionalLight = new DirectionalLight();

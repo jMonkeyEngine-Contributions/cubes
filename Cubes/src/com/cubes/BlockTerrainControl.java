@@ -74,11 +74,11 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public BlockType getBlock(int x, int y, int z){
+    public Block getBlock(int x, int y, int z){
         return getBlock(new Vector3Int(x, y, z));
     }
     
-    public BlockType getBlock(Vector3Int location){
+    public Block getBlock(Vector3Int location){
         BlockTerrain_LocalBlockState localBlockState = getLocalBlockState(location);
         if(localBlockState != null){
             return localBlockState.getBlock();
@@ -86,26 +86,26 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         return null;
     }
     
-    public void setBlockArea(Vector3Int location, Vector3Int size, Class<? extends Block> blockClass){
+    public void setBlockArea(Vector3Int location, Vector3Int size, Block block){
         Vector3Int tmpLocation = new Vector3Int();
         for(int x=0;x<size.getX();x++){
             for(int y=0;y<size.getY();y++){
                 for(int z=0;z<size.getZ();z++){
                     tmpLocation.set(location.getX() + x, location.getY() + y, location.getZ() + z);
-                    setBlock(tmpLocation, blockClass);
+                    setBlock(tmpLocation, block);
                 }
             }
         }
     }
     
-    public void setBlock(int x, int y, int z, Class<? extends Block> blockClass){
-        setBlock(new Vector3Int(x, y, z), blockClass);
+    public void setBlock(int x, int y, int z, Block block){
+        setBlock(new Vector3Int(x, y, z), block);
     }
     
-    public void setBlock(Vector3Int location, Class<? extends Block> blockClass){
+    public void setBlock(Vector3Int location, Block block){
         BlockTerrain_LocalBlockState localBlockState = getLocalBlockState(location);
         if(localBlockState != null){
-            localBlockState.setBlock(blockClass);
+            localBlockState.setBlock(block);
         }
     }
     
@@ -224,13 +224,13 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
     
     //Tools
     
-    public void setBlocksFromHeightmap(Vector3Int location, String heightmapPath, int maximumHeight, Class<? extends Block> blockClass){
+    public void setBlocksFromHeightmap(Vector3Int location, String heightmapPath, int maximumHeight, Block block){
         try{
             Texture heightmapTexture = settings.getAssetManager().loadTexture(heightmapPath);
             ImageBasedHeightMap heightmap = new ImageBasedHeightMap(heightmapTexture.getImage(), 1f);
             heightmap.load();
             heightmap.setHeightScale(maximumHeight / 255f);
-            setBlocksFromHeightmap(location, getHeightmapBlockData(heightmap.getScaledHeightMap(), heightmap.getSize()), blockClass);
+            setBlocksFromHeightmap(location, getHeightmapBlockData(heightmap.getScaledHeightMap(), heightmap.getSize()), block);
         }catch(Exception ex){
             System.out.println("Error while loading heightmap '" + heightmapPath + "'.");
         }
@@ -251,19 +251,19 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         return data;
     }
 
-    public void setBlocksFromHeightmap(Vector3Int location, int[][] heightmap, Class<? extends Block> blockClass){
+    public void setBlocksFromHeightmap(Vector3Int location, int[][] heightmap, Block block){
         Vector3Int tmpLocation = new Vector3Int();
         Vector3Int tmpSize = new Vector3Int();
         for(int x=0;x<heightmap.length;x++){
             for(int z=0;z<heightmap[0].length;z++){
                 tmpLocation.set(location.getX() + x, location.getY(), location.getZ() + z);
                 tmpSize.set(1, heightmap[x][z], 1);
-                setBlockArea(tmpLocation, tmpSize, blockClass);
+                setBlockArea(tmpLocation, tmpSize, block);
             }
         }
     }
     
-    public void setBlocksFromNoise(Vector3Int location, Vector3Int size, float roughness, Class<? extends Block> blockClass){
+    public void setBlocksFromNoise(Vector3Int location, Vector3Int size, float roughness, Block block){
         Noise noise = new Noise(null, roughness, size.getX(), size.getZ());
         noise.initialise();
         float gridMinimum = noise.getMinimum();
@@ -281,20 +281,20 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
                 Vector3Int tmpLocation = new Vector3Int();
                 for(int y=0;y<blockHeight;y++){
                     tmpLocation.set(location.getX() + x, location.getY() + y, location.getZ() + z);
-                    setBlock(tmpLocation, blockClass);
+                    setBlock(tmpLocation, block);
                 }
             }
         }
     }
     
-    public void setBlocksForMaximumFaces(Vector3Int location, Vector3Int size, Class<? extends Block> blockClass){
+    public void setBlocksForMaximumFaces(Vector3Int location, Vector3Int size, Block block){
         Vector3Int tmpLocation = new Vector3Int();
         for(int x=0;x<size.getX();x++){
             for(int y=0;y<size.getY();y++){
                 for(int z=0;z<size.getZ();z++){
                     if(((x ^ y ^ z) & 1) == 1){
                         tmpLocation.set(location.getX() + x, location.getY() + y, location.getZ() + z);
-                        setBlock(tmpLocation, blockClass);
+                        setBlock(tmpLocation, block);
                     }
                 }
             }

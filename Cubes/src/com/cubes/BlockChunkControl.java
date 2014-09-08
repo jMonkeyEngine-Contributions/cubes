@@ -69,12 +69,12 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public BlockType getNeighborBlock_Local(Vector3Int location, Block.Face face){
+    public Block getNeighborBlock_Local(Vector3Int location, Block.Face face){
         Vector3Int neighborLocation = BlockNavigator.getNeighborBlockLocalLocation(location, face);
         return getBlock(neighborLocation);
     }
     
-    public BlockType getNeighborBlock_Global(Vector3Int location, Block.Face face){
+    public Block getNeighborBlock_Global(Vector3Int location, Block.Face face){
         return terrain.getBlock(getNeighborBlockGlobalLocation(location, face));
     }
     
@@ -84,18 +84,18 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         return neighborLocation;
     }
     
-    public BlockType getBlock(Vector3Int location){
+    public Block getBlock(Vector3Int location){
         if(isValidBlockLocation(location)){
             byte blockType = blockTypes[location.getX()][location.getY()][location.getZ()];
-            return BlockManager.getType(blockType);
+            return BlockManager.getBlock(blockType);
         }
         return null;
     }
     
-    public void setBlock(Vector3Int location, Class<? extends Block> blockClass){
+    public void setBlock(Vector3Int location, Block block){
         if(isValidBlockLocation(location)){
-            BlockType blockType = BlockManager.getType(blockClass);
-            blockTypes[location.getX()][location.getY()][location.getZ()] = blockType.getType();
+            byte blockType = BlockManager.getType(block);
+            blockTypes[location.getX()][location.getY()][location.getZ()] = blockType;
             updateBlockState(location);
             needsMeshUpdate = true;
         }
@@ -127,8 +127,8 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
                 node.attachChild(optimizedGeometry_Transparent);
                 updateBlockMaterial();
             }
-            optimizedGeometry_Opaque.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this, BlockChunk_TransparencyMerger.OPAQUE));
-            optimizedGeometry_Transparent.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this, BlockChunk_TransparencyMerger.TRANSPARENT));
+            optimizedGeometry_Opaque.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this, false));
+            optimizedGeometry_Transparent.setMesh(BlockChunk_MeshOptimizer.generateOptimizedMesh(this, true));
             needsMeshUpdate = false;
             return true;
         }
@@ -156,7 +156,7 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
     }
     
     private void updateBlockInformation(Vector3Int location){
-        BlockType neighborBlock_Top = terrain.getBlock(getNeighborBlockGlobalLocation(location, Block.Face.Top));
+        Block neighborBlock_Top = terrain.getBlock(getNeighborBlockGlobalLocation(location, Block.Face.Top));
         blocks_IsOnSurface[location.getX()][location.getY()][location.getZ()] = (neighborBlock_Top == null);
     }
 

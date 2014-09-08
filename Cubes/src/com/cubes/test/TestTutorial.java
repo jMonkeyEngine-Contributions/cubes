@@ -4,10 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
-import com.jme3.scene.Node;
 
 public class TestTutorial extends SimpleApplication{
 
@@ -34,17 +33,17 @@ public class TestTutorial extends SimpleApplication{
 
         //To set a block, just specify the location and the block object
         //(Existing blocks will be replaced)
-        blockTerrain.setBlock(new Vector3Int(0, 0, 0), Block_Wood.class); 
-        blockTerrain.setBlock(new Vector3Int(0, 0, 1), Block_Wood.class);
-        blockTerrain.setBlock(new Vector3Int(1, 0, 0), Block_Wood.class);
-        blockTerrain.setBlock(new Vector3Int(1, 0, 1), Block_Stone.class);
-        blockTerrain.setBlock(0, 0, 0, Block_Grass.class); //For the lazy users :P
+        blockTerrain.setBlock(new Vector3Int(0, 0, 0), CubesTestAssets.BLOCK_WOOD);
+        blockTerrain.setBlock(new Vector3Int(0, 0, 1), CubesTestAssets.BLOCK_WOOD);
+        blockTerrain.setBlock(new Vector3Int(1, 0, 0), CubesTestAssets.BLOCK_WOOD);
+        blockTerrain.setBlock(new Vector3Int(1, 0, 1), CubesTestAssets.BLOCK_STONE);
+        blockTerrain.setBlock(0, 0, 0, CubesTestAssets.BLOCK_GRASS); //For the lazy users :P
 
         //You can place whole areas of blocks too: setBlockArea(location, size, block)
         //(The specified block will be cloned each time)
         //The following line will set 3 blocks on top of each other
         //({1,1,1}, {1,2,3} and {1,3,1})
-        blockTerrain.setBlockArea(new Vector3Int(1, 1, 1), new Vector3Int(1, 3, 1), Block_Stone.class);
+        blockTerrain.setBlockArea(new Vector3Int(1, 1, 1), new Vector3Int(1, 3, 1), CubesTestAssets.BLOCK_STONE);
 
         //Removing a block works in a similar way
         blockTerrain.removeBlock(new Vector3Int(1, 2, 1));

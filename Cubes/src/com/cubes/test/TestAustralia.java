@@ -5,10 +5,9 @@ import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
-import com.jme3.scene.Node;
 
 public class TestAustralia extends SimpleApplication{
 
@@ -32,7 +31,7 @@ public class TestAustralia extends SimpleApplication{
         CubesTestAssets.initializeWater(this);
         
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(7, 1, 7));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, 0), "Textures/cubes/heightmap_australia.jpg", 10, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, 0), "Textures/cubes/heightmap_australia.jpg", 10, CubesTestAssets.BLOCK_GRASS);
         Node terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);

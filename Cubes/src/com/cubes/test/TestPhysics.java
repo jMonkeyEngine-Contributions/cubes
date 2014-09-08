@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
@@ -12,12 +13,10 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.system.AppSettings;
-import com.cubes.*;
-import com.cubes.test.blocks.*;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.system.AppSettings;
+import com.cubes.*;
 
 public class TestPhysics extends SimpleApplication implements ActionListener{
 
@@ -72,7 +71,7 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
         
         cubesSettings = CubesTestAssets.getSettings(this);
         blockTerrain = new BlockTerrainControl(cubesSettings, new Vector3Int(7, 1, 7));
-        blockTerrain.setBlocksFromNoise(new Vector3Int(), terrainSize, 0.8f, Block_Grass.class);
+        blockTerrain.setBlocksFromNoise(new Vector3Int(), terrainSize, 0.8f, CubesTestAssets.BLOCK_GRASS);
         blockTerrain.addChunkListener(new BlockChunkListener(){
 
             @Override

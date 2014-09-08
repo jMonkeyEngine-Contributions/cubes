@@ -48,6 +48,18 @@ public class BlockNavigator{
         return neighborLocation;
     }
     
+    public static Block.Face getOppositeFace(Block.Face face){
+        switch(face){
+            case Top:       return Block.Face.Bottom;
+            case Bottom:    return Block.Face.Top;
+            case Left:      return Block.Face.Right;
+            case Right:     return Block.Face.Left;
+            case Front:     return Block.Face.Back;
+            case Back:      return Block.Face.Front;
+        }
+        return null;
+    }
+    
     public static Vector3Int getPointedBlockLocation(BlockTerrainControl blockTerrain, Vector3f collisionContactPoint, boolean getNeighborLocation){
         Vector3f collisionLocation = Util.compensateFloatRoundingErrors(collisionContactPoint);
         Vector3Int blockLocation = new Vector3Int(

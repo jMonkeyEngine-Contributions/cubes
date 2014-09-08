@@ -14,7 +14,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.system.AppSettings;
 import com.jme3.scene.Node;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
 
 public class TestPicking extends SimpleApplication implements ActionListener{
 
@@ -53,8 +52,8 @@ public class TestPicking extends SimpleApplication implements ActionListener{
     
     private void initBlockTerrain(){
         blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(2, 1, 2));
-        blockTerrain.setBlockArea(new Vector3Int(0, 0, 0), new Vector3Int(32, 1, 32), Block_Stone.class);
-        blockTerrain.setBlocksFromNoise(new Vector3Int(0, 1, 0), new Vector3Int(32, 5, 32), 0.5f, Block_Grass.class);
+        blockTerrain.setBlockArea(new Vector3Int(0, 0, 0), new Vector3Int(32, 1, 32), CubesTestAssets.BLOCK_STONE);
+        blockTerrain.setBlocksFromNoise(new Vector3Int(0, 1, 0), new Vector3Int(32, 5, 32), 0.5f, CubesTestAssets.BLOCK_GRASS);
         terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         rootNode.attachChild(terrainNode);
@@ -89,7 +88,7 @@ public class TestPicking extends SimpleApplication implements ActionListener{
         if(action.equals("set_block") && value){
             Vector3Int blockLocation = getCurrentPointedBlockLocation(true);
             if(blockLocation != null){
-                blockTerrain.setBlock(blockLocation, Block_Wood.class);
+                blockTerrain.setBlock(blockLocation, CubesTestAssets.BLOCK_WOOD);
             }
         }
         else if(action.equals("remove_block") && value){

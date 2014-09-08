@@ -4,10 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
-import com.jme3.scene.Node;
 
 public class TestModifications extends SimpleApplication{
 
@@ -37,13 +36,13 @@ public class TestModifications extends SimpleApplication{
                 int groundHeight = (int) ((Math.random() * 4) + 8);
                 for(int y=0;y<groundHeight;y++){
                     if((z != 15) || (y != 4)){
-                        blockTerrain.setBlock(x, y, z, Block_Stone.class);
+                        blockTerrain.setBlock(x, y, z, CubesTestAssets.BLOCK_STONE);
                     }
                 }
                 int additionalHeight = (int) (Math.random() * 4);
                 for(int y=0;y<additionalHeight;y++){
-                    Class<? extends Block> blockClass = ((y > 0)?Block_Grass.class:Block_Wood.class);
-                    blockTerrain.setBlock(x, (groundHeight + y), z, blockClass);
+                    Block block = ((y > 0)?CubesTestAssets.BLOCK_GRASS:CubesTestAssets.BLOCK_WOOD);
+                    blockTerrain.setBlock(x, (groundHeight + y), z, block);
                 }
             }
         }
@@ -64,7 +63,7 @@ public class TestModifications extends SimpleApplication{
             if(lastModificationLocation.getX() > 31){
                 lastModificationLocation.setX(0);
             }
-            blockTerrain.setBlock(lastModificationLocation, Block_Grass.class);
+            blockTerrain.setBlock(lastModificationLocation, CubesTestAssets.BLOCK_GRASS);
             lastModificationTimestamp = System.currentTimeMillis();
         }
     }

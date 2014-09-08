@@ -21,14 +21,14 @@ import com.cubes.*;
  */
 public class BlockModel{
 
-    public BlockModel(String modelPath, Class[] blockClasses){
+    public BlockModel(String modelPath, Block[] blocks){
         this.modelPath = modelPath;
-        this.blockClasses = blockClasses;
+        this.blocks = blocks;
     }
     private String modelPath;
-    private Class[] blockClasses;
+    private Block[] blocks;
     private int nextMaterialIndex = 0;
-    private HashMap<Material, Class> materialBlocks = new HashMap<Material, Class>();
+    private HashMap<Material, Block> materialBlocks = new HashMap<Material, Block>();
     
     public void addToBlockTerrain(BlockTerrainControl blockTerrain, Vector3Int location, Vector3Int size){
         Spatial spatial = blockTerrain.getSettings().getAssetManager().loadModel(modelPath);
@@ -49,24 +49,24 @@ public class BlockModel{
                     CollisionResult collisionResult = collisionResults.getClosestCollision();
                     if(collisionResult != null){
                         tmpLocation.set(location).addLocal(x, y, z);
-                        Class blockClass = getMaterialBlockClass(collisionResult.getGeometry().getMaterial());
-                        blockTerrain.setBlock(tmpLocation, blockClass);
+                        Block block = getMaterialBlock(collisionResult.getGeometry().getMaterial());
+                        blockTerrain.setBlock(tmpLocation, block);
                     }
                 }
             }
         }
     }
     
-    private Class getMaterialBlockClass(Material material){
-        Class blockClass = materialBlocks.get(material);
-        if(blockClass == null){
-            blockClass = blockClasses[nextMaterialIndex];
-            if(nextMaterialIndex < (blockClasses.length - 1)){
+    private Block getMaterialBlock(Material material){
+        Block block = materialBlocks.get(material);
+        if(block == null){
+            block = blocks[nextMaterialIndex];
+            if(nextMaterialIndex < (blocks.length - 1)){
                 nextMaterialIndex++;
             }
-            materialBlocks.put(material, blockClass);
+            materialBlocks.put(material, block);
         }
-        return blockClass;
+        return block;
     }
     
     private static Vector3f getBounds(Spatial spatial){

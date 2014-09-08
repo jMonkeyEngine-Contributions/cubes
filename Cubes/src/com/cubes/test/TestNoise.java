@@ -4,10 +4,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.cubes.*;
-import com.cubes.test.blocks.*;
-import com.jme3.scene.Node;
 
 public class TestNoise extends SimpleApplication{
 
@@ -27,11 +27,13 @@ public class TestNoise extends SimpleApplication{
     @Override
     public void simpleInitApp(){
         CubesTestAssets.registerBlocks();
+        CubesTestAssets.initializeEnvironment(this);
         
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this), new Vector3Int(4, 1, 4));
-        blockTerrain.setBlocksFromNoise(new Vector3Int(0, 0, 0), new Vector3Int(64, 50, 64), 0.3f, Block_Grass.class);
+        blockTerrain.setBlocksFromNoise(new Vector3Int(0, 0, 0), new Vector3Int(64, 50, 64), 0.3f, CubesTestAssets.BLOCK_GRASS);
         Node terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
+        terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.attachChild(terrainNode);
         
         cam.setLocation(new Vector3f(-64, 187, -55));
