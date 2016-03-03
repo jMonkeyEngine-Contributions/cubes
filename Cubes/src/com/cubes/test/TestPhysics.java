@@ -6,7 +6,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -35,13 +35,14 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
     }
     private final Vector3Int terrainSize = new Vector3Int(100, 30, 100);
     private BulletAppState bulletAppState;
-    private CharacterControl playerControl;
+    private BetterCharacterControl playerControl;
     private Vector3f walkDirection = new Vector3f();
     private boolean[] arrowKeys = new boolean[4];
     private CubesSettings cubesSettings;
     private BlockTerrainControl blockTerrain;
     private Node terrainNode = new Node();
-
+    private Node playerNode = new Node();
+ 
     @Override
     public void simpleInitApp(){
         bulletAppState = new BulletAppState();
@@ -92,17 +93,19 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
     }
 
     private void initPlayer(){
-        playerControl = new CharacterControl(new CapsuleCollisionShape((cubesSettings.getBlockSize() / 2), cubesSettings.getBlockSize() * 2), 0.05f);
-        playerControl.setJumpSpeed(25);
-        playerControl.setFallSpeed(20);
-        playerControl.setGravity(70);
-        playerControl.setPhysicsLocation(new Vector3f(5, terrainSize.getY() + 5, 5).mult(cubesSettings.getBlockSize()));
+        playerControl = new BetterCharacterControl(cubesSettings.getBlockSize() / 2, cubesSettings.getBlockSize() * 2, 0.05f);
+        playerControl.setJumpForce(new Vector3f(0,0.4f * cubesSettings.getBlockSize(),0));
+        playerNode.addControl(playerControl);
+        terrainNode.attachChild(playerNode);
         bulletAppState.getPhysicsSpace().add(playerControl);
+        bulletAppState.getPhysicsSpace().setGravity(new Vector3f(0,-19.8f * cubesSettings.getBlockSize(),0));
+        playerControl.warp(new Vector3f(5, terrainSize.getY() + 5, 5).mult(cubesSettings.getBlockSize()));
+
     }
 
     @Override
     public void simpleUpdate(float lastTimePerFrame){
-        float playerMoveSpeed = ((cubesSettings.getBlockSize() * 6.5f) * lastTimePerFrame);
+        float playerMoveSpeed = ((cubesSettings.getBlockSize() * 360.5f) * lastTimePerFrame);
         Vector3f camDir = cam.getDirection().mult(playerMoveSpeed);
         Vector3f camLeft = cam.getLeft().mult(playerMoveSpeed);
         walkDirection.set(0, 0, 0);
@@ -112,7 +115,11 @@ public class TestPhysics extends SimpleApplication implements ActionListener{
         if(arrowKeys[3]){ walkDirection.addLocal(camLeft); }
         walkDirection.setY(0);
         playerControl.setWalkDirection(walkDirection);
-        cam.setLocation(playerControl.getPhysicsLocation());
+        Vector3f playerLoc = playerNode.getWorldTranslation();
+        playerLoc.setY(playerLoc.getY() + cubesSettings.getBlockSize() * 1.5f);
+        playerLoc = playerLoc.add(camDir.normalize().mult(cubesSettings.getBlockSize() * -0.5f));
+
+        cam.setLocation(playerLoc);
     }
 
     @Override
