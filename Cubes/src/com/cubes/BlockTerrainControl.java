@@ -14,6 +14,8 @@ import com.jme3.scene.control.Control;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.cubes.network.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 /**
@@ -159,11 +161,12 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         return null;
     }
     
-    private boolean isValidChunkLocation(Vector3Int location){
+    public boolean isValidChunkLocation(Vector3Int location){
         return chunks.containsKey(keyify(location));
     }
     
-    private Vector3Int getChunkLocation(Vector3Int blockLocation){
+    /** Get chunk location from block location */
+    public Vector3Int getChunkLocation(Vector3Int blockLocation){
         Vector3Int chunkLocation = new Vector3Int();
         int chunkX = (blockLocation.getX() / settings.getChunkSizeX());
         int chunkY = (blockLocation.getY() / settings.getChunkSizeY());
@@ -324,6 +327,26 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
         }
     }
 
+    public ArrayList<byte[]> writeChunkPartials(Vector3Int chunkLoc) {
+        ArrayList<byte[]> returnValue = new ArrayList<byte[]>();
+        String chunkLocation = keyify(chunkLoc);
+        BlockChunkControl chunk = chunks.get(chunkLocation);
+        Vector3Int vChunkLocation = vectorify(chunkLocation);
+        for(int i = 0; i < settings.getChunkSizeY(); i++) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            BitOutputStream bitOutputStream = new BitOutputStream(byteArrayOutputStream);            
+            bitOutputStream.writeInteger(vChunkLocation.getX());
+            bitOutputStream.writeInteger(vChunkLocation.getY());
+            bitOutputStream.writeInteger(vChunkLocation.getZ()); // is this always 0?
+            bitOutputStream.writeInteger(i); // Virticle slice of chunk
+            chunk.write(i, bitOutputStream);
+            bitOutputStream.close();
+            byte[] chunkBytes = byteArrayOutputStream.toByteArray();
+            returnValue.add(chunkBytes);
+        }
+        return returnValue;
+    }
+
     @Override
     public void read(BitInputStream inputStream) throws IOException{
         int chunkCount = inputStream.readInteger();
@@ -339,4 +362,26 @@ public class BlockTerrainControl extends AbstractControl implements BitSerializa
             --chunkCount;
         }
     }
+
+    public void readChunkPartial(BitInputStream inputStream) throws IOException{
+        int chunkX = inputStream.readInteger();
+        int chunkY = inputStream.readInteger();
+        int chunkZ = inputStream.readInteger();
+        int chunkSlice = inputStream.readInteger();
+        Vector3Int chunkLocation;
+        chunkLocation = new Vector3Int(chunkX, chunkY, chunkZ);
+        initializeChunk(chunkLocation);
+        BlockChunkControl chunk = chunks.get(keyify(chunkLocation));
+        chunk.read(chunkSlice, inputStream);
+    }
+    
+    public void readChunkPartial(byte data[]) {
+         BitInputStream bitInputStream = new BitInputStream(new ByteArrayInputStream(data));
+         try {
+             this.readChunkPartial(bitInputStream);
+         } catch(IOException ex){
+             ex.printStackTrace();
+         }
+    }
+
 }

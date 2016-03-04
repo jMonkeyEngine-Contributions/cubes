@@ -137,4 +137,5 @@ public class BitOutputStream{
     public int getPendingBits(){
         return bits;
     }
+    
 }

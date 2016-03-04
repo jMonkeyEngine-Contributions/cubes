@@ -199,6 +199,14 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
         }
     }
 
+    public void write(int sliceIndex, BitOutputStream outputStream){
+        for(int x=0;x<blockTypes.length;x++){
+            for(int z=0;z<blockTypes[0][0].length;z++){
+                outputStream.writeBits(blockTypes[x][sliceIndex][z], 8);
+            }
+        }
+    }
+    
     @Override
     public void read(BitInputStream inputStream) throws IOException{
         for(int x=0;x<blockTypes.length;x++){
@@ -215,6 +223,21 @@ public class BlockChunkControl extends AbstractControl implements BitSerializabl
                     tmpLocation.set(x, y, z);
                     updateBlockInformation(tmpLocation);
                 }
+            }
+        }
+        needsMeshUpdate = true;
+    }
+     public void read(int slice, BitInputStream inputStream) throws IOException{
+        for(int x=0;x<blockTypes.length;x++){
+            for(int z=0;z<blockTypes[0][0].length;z++){
+                blockTypes[x][slice][z] = (byte) inputStream.readBits(8);
+            }
+        }
+        Vector3Int tmpLocation = new Vector3Int();
+        for(int x=0;x<blockTypes.length;x++){
+            for(int z=0;z<blockTypes[0][0].length;z++){
+                tmpLocation.set(x, slice, z);
+                updateBlockInformation(tmpLocation);
             }
         }
         needsMeshUpdate = true;

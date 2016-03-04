@@ -15,7 +15,9 @@ import com.jme3.material.Material;
 public class CubesSettings{
     
     public CubesSettings(Application application){
-        assetManager = application.getAssetManager();
+        if (application != null) {
+            assetManager = application.getAssetManager();
+        }
     }
     private AssetManager assetManager;
     private float blockSize = 3;
@@ -67,7 +69,9 @@ public class CubesSettings{
     }
 
     public void setDefaultBlockMaterial(String textureFilePath){
-        setBlockMaterial(new BlockChunk_Material(assetManager, textureFilePath));
+        if (assetManager != null) {
+            setBlockMaterial(new BlockChunk_Material(assetManager, textureFilePath));
+        }
     }
 
     public void setBlockMaterial(Material blockMaterial){
