@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import com.cubes.*;
+import java.util.HashMap;
 
 /**
  *
@@ -15,15 +16,12 @@ import com.cubes.*;
  */
 public class CubesSerializer{
     
-    public static byte[][][][] writeChunksToBytes(BlockTerrainControl blockTerrain){
-        BlockChunkControl[][][] chunks = blockTerrain.getChunks();
-        byte[][][][] bytes = new byte[chunks.length][chunks[0].length][chunks[0][0].length][];
-        for(int x=0;x<chunks.length;x++){
-            for(int y=0;y<chunks[x].length;y++){
-                for(int z=0;z<chunks[x][y].length;z++){
-                    bytes[x][y][z] = writeToBytes(chunks[x][y][z]);
-                }
-            }
+    public static HashMap<String, byte[]> writeChunksToBytes(BlockTerrainControl blockTerrain){
+        HashMap<String, BlockChunkControl> chunks = blockTerrain.getChunks();
+        HashMap<String, byte[]> bytes = new HashMap<String, byte[]>();
+        for (String chunkLocation :  chunks.keySet()) {
+            BlockChunkControl chunk = chunks.get(chunkLocation);
+            bytes.put(chunkLocation, writeToBytes(chunk));
         }
         return bytes;
     }
